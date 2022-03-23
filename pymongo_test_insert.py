@@ -1,3 +1,6 @@
+from datetime import datetime
+import authentication
+
 def get_database():
     from pymongo import MongoClient
 
@@ -13,24 +16,33 @@ def get_database():
 if __name__ == "__main__":
     dbname = get_database()
     collection_name = dbname["User"]
+    collection_post = dbname["Post"]
+    now = datetime.now()
+    timestamp = datetime.timestamp(now)
 
-    item_1 = {
-        "_id": "U1IT00001",
-        "item_name": "Blender",
-        "max_discount": "10%",
-        "batch_number": "RR450020FRG",
-        "price": 340,
-        "category": "kitchen appliance"
+    User_test = {
+        "pseudo": "Blender",
+        "posts": [],
+        "subscribe": [],
+        "follower": [],
+        "notification": [],
+        "lastConnection": timestamp
     }
 
-    item_2 = {
-        "_id": "U1IT00002",
-        "item_name": "Egg",
-        "category": "food",
-        "quantity": 12,
-        "price": 36,
-        "item_description": "brown country eggs"
+    Post_test = {
+        "tags" : [],
+        "message" : "Hello bg",
+        "photo" : [],
+        "senderID" : "id45",
+        "likeNumber" : 0
     }
-    collection_name.insert_many([item_1, item_2])
 
+    #print(authentication.signUp("Tateuf","123"))
+    #collection_name.insert_one(User_test)
+    #collection_post.insert_one(Post_test)
+    #crypto.addUser("test","password")
+    #authentication.verificationUser("test","password")
+    #authentication.verificationUser("test2","password")
+    #authentication.verificationUser("test","password2")
+    print(authentication.signIn("Tateuf","123"))
     print(dbname.list_collection_names())

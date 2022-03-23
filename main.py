@@ -1,16 +1,40 @@
-# This is a sample Python script.
+import json
+from typing import Optional
+from fastapi import FastAPI
+from pydantic import BaseModel
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
+import authentication
 
-# Press Maj+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+app = FastAPI()
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+class Credentials(BaseModel):
+    pseudo: str
+    code: str
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+@app.post("/signUp")
+def read_root(credentials: Credentials):
+    test = authentication.signUp(credentials.pseudo, credentials.code)
+    return json.dumps(test)
+
+
+@app.post("/signIn")
+def read_root(credentials: Credentials):
+    return authentication.signIn(credentials.pseudo, credentials.code)
+
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: Optional[str] = None):
+    return {"item_id": item_id, "q": q}
