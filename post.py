@@ -15,8 +15,11 @@ def createPost(jsonObject):
     }
     try :
         dbname.Post.insert_one(Post)
+        posts = dbname.User.find({"_id": jsonObject["senderId"]})[0]["Posts"]
+        posts.append(dbname.Post.find({"creation": timestamp})[0]["_id"])
+        dbname.User.update_one({"_id": jsonObject["senderId"]}, {'$set': {"Posts": posts}})
         return Post
-    except :
+    except:
         return "Post failed"
 
 def likePost(id,pseudo):
