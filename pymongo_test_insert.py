@@ -1,5 +1,7 @@
 from datetime import datetime
 import authentication
+import user
+
 
 def get_database():
     from pymongo import MongoClient
@@ -44,5 +46,6 @@ if __name__ == "__main__":
     #authentication.verificationUser("test","password")
     #authentication.verificationUser("test2","password")
     #authentication.verificationUser("test","password2")
-    print(authentication.signIn("Tateuf","123"))
-    print(dbname.list_collection_names())
+    print(user.verifyFollow("Tateuf","Troy"))
+    #print(authentication.signIn("Tateuf","123"))
+    #print(dbname.list_collection_names())

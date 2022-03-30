@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 import authentication
+import post
 
 app = FastAPI()
 
@@ -13,6 +14,8 @@ class Credentials(BaseModel):
     pseudo: str
     code: str
 
+class Poster(BaseModel):
+    post : dict
 
 @app.get("/")
 def read_root():
@@ -28,6 +31,10 @@ def read_root(credentials: Credentials):
 @app.post("/signIn")
 def read_root(credentials: Credentials):
     return authentication.signIn(credentials.pseudo, credentials.code)
+
+@app.post("/post")
+def read_root(poster: Poster):
+    return post.createPost(poster.post)
 
 
 @app.get("/")

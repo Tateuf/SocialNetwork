@@ -1,8 +1,11 @@
 import hashlib
 import os
+
+from bson import json_util
+
 import database
 import user
-
+import json
 
 def signUp(pseudo, code):
     dbname = database.get_database()
@@ -21,7 +24,7 @@ def signUp(pseudo, code):
                     "salt": salt
             }
             collection_auth.insert_one(Authentication)
-            return currentUser
+            return pseudo + " has been created"
         except:
             return "DB failed"
 
@@ -36,7 +39,7 @@ def signIn(pseudo, code):
         if key == keyVerification:
             try :
                 currentUser = user.findOne(pseudo)
-                return currentUser
+                return json.loads(json_util.dumps(currentUser))
             except :
                 return "User not in the db"
 
