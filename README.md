@@ -13,4 +13,4 @@ mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&dire
 Pour démarrer le serveur : uvicorn main:app --reload
 
 Puis on utilise ngrok pour démarer le serveur en ligne. 
-dans la console : ngork https 8000
+dans la console : ngrok http 8000
