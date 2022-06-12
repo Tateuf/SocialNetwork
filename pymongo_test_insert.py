@@ -28,13 +28,12 @@ if __name__ == "__main__":
         "subscribe": [],
         "follower": [],
         "notification": [],
-        "lastConnection": timestamp
+        "lastConnection": timestamp,
+        "likedPost": []
     }
 
     Post_test = {
-        "tags" : [],
         "message" : "Hello bg",
-        "photo" : [],
         "senderID" : "id45",
         "likeNumber" : 0
     }

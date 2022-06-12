@@ -37,15 +37,15 @@ def signIn(pseudo, code):
         salt = information[0]['salt']
         keyVerification = hashlib.pbkdf2_hmac('sha256', code.encode('utf-8'), salt, 100000)
         if key == keyVerification:
-            try :
-                currentUser = user.findOne(pseudo)
-                return json.loads(json_util.dumps(currentUser))
-            except :
+            try:
+                currentUser = user.find(pseudo)
+                if len(currentUser) == 0:
+                    return "User not in the db"
+                else :
+                    return currentUser
+            except:
                 return "User not in the db"
-
         else:
-            print("Erreur dans le mot de passe")
-            return False
+            return "Erreur dans le mot de passe"
     except:
-        print("Erreur dans le pseudo")
-        return False
+        return "Erreur dans le pseudo"
