@@ -1,7 +1,6 @@
 import json
 
 from bson import json_util
-
 import database
 from datetime import datetime
 

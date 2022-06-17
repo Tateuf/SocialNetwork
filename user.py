@@ -54,9 +54,7 @@ def followOne(followerPseudo, followedPseudo):
         subscribes.append(followed["pseudo"])
         follows.append(follower["pseudo"])
         dbname.User.update_one({"pseudo": followerPseudo}, {'$set': {"subscribe": subscribes}})
-        print(dbname.User.find({"pseudo": followerPseudo})[0])
         dbname.User.update_one({"pseudo": followedPseudo}, {'$set': {"follower": follows}})
-        print(dbname.User.find({"pseudo": followedPseudo})[0])
         response = {
             "result": True
         }
