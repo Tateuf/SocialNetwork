@@ -38,6 +38,7 @@ if __name__ == "__main__":
         "likeNumber" : 0
     }
 
+
     #print(authentication.signUp("Tateuf","123"))
     #collection_name.insert_one(User_test)
     #collection_post.insert_one(Post_test)

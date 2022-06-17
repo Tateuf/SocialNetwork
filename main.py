@@ -29,8 +29,9 @@ class Follow(BaseModel):
     follower : str
 
 class LikePost(BaseModel):
-    id : str
     pseudo : str
+    author : str
+    creation : float
 
 @app.get("/")
 def read_root():
@@ -71,27 +72,27 @@ def read_root(follow : Follow):
 def read_root(follow : Follow):
     return user.unfollowOne(follow.follower, follow.followed)
 
-@app.get('/verify_follow')
+@app.post('/verifyFollow')
 def read_root(follow : Follow):
     return user.verifyFollow(follow.follower, follow.followed)
 
 @app.put('/like')
 def read_root(likePost : LikePost):
-    return post.likePost(likePost.id, likePost.pseudo)
+    return post.likePost(likePost.author, likePost.pseudo, likePost.creation)
 
 @app.put('/unlike')
 def read_root(likePost : LikePost):
-    return post.unlikePost(likePost.id, likePost.pseudo)
+    return post.unlikePost(likePost.author, likePost.pseudo, likePost.creation)
 
-@app.get('/verify_like')
+@app.post('/verifyLike')
 def read_root(likePost : LikePost):
-    return post.verifyLike(likePost.id, likePost.pseudo)
+    return post.verifyLike(likePost.author, likePost.pseudo, likePost.creation)
 
 @app.post('/postByUser')
 def read_root(search : Search):
     return user.getPostfromUser(search.research)
 
-@app.get('/subscribe_post')
+@app.post('/subscribePost')
 def read_root(search : Search):
     return post.getAllMyPost(search.research)
 

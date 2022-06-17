@@ -13,7 +13,8 @@ def createPost(message,senderPseudo):
         "message": message,
         "senderPseudo" : senderPseudo,
         "creation" : timestamp,
-        "likeNumber" : 0
+        "likeNumber" : 0,
+        "likers" : []
     }
     try :
         dbname.Post.insert_one(Post)
@@ -25,49 +26,84 @@ def createPost(message,senderPseudo):
     except:
         return "Post failed"
 
-def likePost(id,pseudo):
+def likePost(author, pseudo, creation):
     try :
         dbname = database.get_database()
-        likeNumber = dbname.Post.find({"_id": ObjectId(id)})[0]["likeNumber"]
+        print(author, pseudo, creation)
+        post = dbname.Post.find({"senderPseudo": author, "creation" : creation})[0]
+        likeNumber = post["likeNumber"]
+        try :
+            likers = post["likers"]
+        except :
+            likers = []
+        likers.append(pseudo)
+        postID = post["_id"]
         likeNumber += 1
-        dbname.Post.update_one({"_id": ObjectId(id)}, {'$set': {"likeNumber": likeNumber}})
+        dbname.Post.update_one({"senderPseudo": author, "creation" : creation}, {'$set': {"likeNumber": likeNumber, "likers": likers}})
         likedPost = dbname.User.find({"pseudo": pseudo})[0]["likedPost"]
-        likedPost.append(id)
+        likedPost.append(str(postID))
         dbname.User.update_one({"pseudo" : pseudo}, {'$set': {"likedPost" : likedPost}})
-        return " post liked "
+        response = {
+            "result": True
+        }
+        return response
     except :
-        return " error during the like time"
+        response = {
+            "result": "error"
+        }
+        return response
 
 
-def unlikePost(id,pseudo):
+def unlikePost(author, pseudo, creation):
     try :
         dbname = database.get_database()
-        likeNumber = dbname.Post.find({"_id": ObjectId(id)})[0]["likeNumber"]
+        post = dbname.Post.find({"senderPseudo": author, "creation": creation})[0]
+        likeNumber = post["likeNumber"]
+        postID = post["_id"]
         likeNumber -= 1
-        dbname.Post.update_one({"_id": ObjectId(id)}, {'$set': {"likeNumber": likeNumber}})
+        try :
+            likers = post["likers"]
+            likers.remove(pseudo)
+        except :
+            likers = []
+        dbname.Post.update_one({"senderPseudo": author, "creation": creation}, {'$set': {"likeNumber": likeNumber, "likers": likers}})
         likedPost = dbname.User.find({"pseudo": pseudo})[0]["likedPost"]
-        likedPost.remove(id)
+        likedPost.remove(str(postID))
         dbname.User.update_one({"pseudo": pseudo}, {'$set': {"likedPost": likedPost}})
-        return " post unliked "
+        response = {
+            "result": True
+        }
+        return response
     except :
-        return " error during the like time"
+        response = {
+            "result": False
+        }
+        return response
 
 
-def verifyLike(id,pseudo):
+def verifyLike(author, pseudo, creation):
+    response = {
+        "result": False
+    }
     try :
         dbname = database.get_database()
-        if id in dbname.User.find({"pseudo": pseudo})[0]["likedPost"]:
-            return True
+        id = dbname.Post.find({"senderPseudo": author, "creation": creation})[0]["_id"]
+        if str(id) in dbname.User.find({"pseudo": pseudo})[0]["likedPost"]:
+            response["result"] = True
+            return response
         else :
-            return False
+            return response
     except :
-        return "error"
+        return response
 
 def getAllMyPost(pseudo):
     try :
         dbname = database.get_database()
         subscribes = dbname.User.find({"pseudo": pseudo})[0]["subscribe"]
         posts = dbname.Post.find({"senderPseudo" : { "$in" : subscribes }}).sort("creation")
-        return json.loads(json_util.dumps(posts))[::-1]
+        response = {
+            "posts" : json.loads(json_util.dumps(posts))[::-1]
+        }
+        return response
     except :
         return "error"

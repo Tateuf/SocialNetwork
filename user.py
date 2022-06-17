@@ -31,8 +31,10 @@ def find(pseudo):
 def findAll(research):
     dbname = database.get_database()
     data = dbname.User.find({"pseudo": {'$regex': '^' + research, '$options': 'i'}},{"_id":0})
-    print(json.loads(json_util.dumps(data)))
-    return json.loads(json_util.dumps(data))
+    response = {
+        "users" : json.loads(json_util.dumps(data))
+    }
+    return response
 
 
 
@@ -58,12 +60,21 @@ def followOne(followerPseudo, followedPseudo):
         print(dbname.User.find({"pseudo": followerPseudo})[0])
         dbname.User.update_one({"pseudo": followedPseudo}, {'$set': {"follower": follows}})
         print(dbname.User.find({"pseudo": followedPseudo})[0])
-        return followerPseudo + " follows " + followedPseudo
+        response = {
+            "result": True
+        }
+        return response
     except:
-        return " error "
+        response = {
+            "result": False
+        }
+        return response
 
 
 def unfollowOne(followerPseudo, followedPseudo):
+    response = {
+        "result": True
+    }
     try:
         dbname = database.get_database()
         follower = dbname.User.find({"pseudo": followerPseudo})[0]
@@ -76,23 +87,30 @@ def unfollowOne(followerPseudo, followedPseudo):
         print(dbname.User.find({"pseudo": followerPseudo})[0])
         dbname.User.update_one({"pseudo": followedPseudo}, {'$set': {"follower": follows}})
         print(dbname.User.find({"pseudo": followedPseudo})[0])
-        return followerPseudo + " unfollows " + followedPseudo
+        return response
     except:
-        return " error "
+        response = {
+            "result": False
+        }
+        return response
 
 
 def verifyFollow(followerPseudo, followedPseudo):
+    response = {
+        "result": False
+    }
     try:
         dbname = database.get_database()
         follower = dbname.User.find({"pseudo": followerPseudo})[0]
         followed = dbname.User.find({"pseudo": followedPseudo})[0]
         subscribes = follower["subscribe"]
         if followed["pseudo"] in subscribes:
-            return True
+            response["result"] = True
+            return response
         else:
-            return False
+            return response
     except:
-        return " error "
+        return response
 
 
 def findIDbyPseudo(pseudo):
@@ -109,7 +127,13 @@ def getPostfromUser(pseudo):
     try:
         dbname = database.get_database()
         postsID = dbname.User.find({"pseudo": pseudo})[0]["posts"]
-        posts = dbname.Post.find({"_id": {"$in": ObjectId(postsID)}}).sort("creation")
-        return json.loads(json_util.dumps(posts))[::-1]
+        postObjectId = []
+        for elem in postsID:
+            postObjectId.append(ObjectId(elem))
+        posts = dbname.Post.find({"_id": {"$in": postObjectId}}).sort("creation")
+        response = {
+            "posts" : json.loads(json_util.dumps(posts))[::-1]
+        }
+        return response
     except:
         return "error"
