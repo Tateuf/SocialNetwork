@@ -1,11 +1,8 @@
 import hashlib
 import os
-
-from bson import json_util
-
 import database
 import user
-import json
+
 
 def signUp(pseudo, code):
     dbname = database.get_database()

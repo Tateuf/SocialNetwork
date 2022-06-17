@@ -1,9 +1,6 @@
 import json
 
 from bson import json_util, ObjectId
-
-import pymongo_test_insert
-import authentication
 import database
 from datetime import datetime
 

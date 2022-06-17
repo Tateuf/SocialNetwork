@@ -1,9 +1,4 @@
 import json
-import string
-from array import array
-from typing import Optional
-
-import bson
 from fastapi import FastAPI
 from pydantic import BaseModel
 import authentication
